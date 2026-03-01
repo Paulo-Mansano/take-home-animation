@@ -11,6 +11,7 @@ import { LAYOUT } from '../constants/layout';
 import { COLORS } from '../constants/theme';
 import { OdometerSlider } from '../components/OdometerSlider';
 import { WaterSliderBar } from '../components/WaterSliderBar';
+import type { TargetLayout } from '../components/CardCollapseOverlay';
 
 const INITIAL_OZ = 12;
 const MIN_OZ = 0;
@@ -18,18 +19,26 @@ const MAX_OZ = 32;
 const STEP_OZ = 0.5;
 
 type WaterScreenProps = {
-  onClose: () => void;
+  onClose: (layout: TargetLayout) => void;
 };
 
 export function WaterScreen({ onClose }: WaterScreenProps) {
   const ozRef = useRef(INITIAL_OZ);
   const valueRef = useSharedValue(INITIAL_OZ);
+  const closeButtonRef = useRef<View>(null);
+
+  const handleClose = () => {
+    closeButtonRef.current?.measureInWindow((x, y, width, height) => {
+      onClose({ x, y, width, height });
+    });
+  };
 
   return (
     <View style={styles.container}>
       <Pressable
+        ref={closeButtonRef}
         style={styles.closeButton}
-        onPress={onClose}
+        onPress={handleClose}
         hitSlop={12}
       >
         <Text style={styles.closeIcon}>✕</Text>

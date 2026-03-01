@@ -11,13 +11,16 @@ import Animated, {
 import { WaterScreen } from './screens/WaterScreen';
 import { StepsScreen } from './screens/StepsScreen';
 import { CardExpansionOverlay } from './components/CardExpansionOverlay';
+import { CardCollapseOverlay } from './components/CardCollapseOverlay';
 import type { TriggerLayout } from './components/CardExpansionOverlay';
+import type { TargetLayout } from './components/CardCollapseOverlay';
 
-type ScreenMode = 'steps' | 'expanding' | 'water';
+type ScreenMode = 'steps' | 'expanding' | 'water' | 'collapsing';
 
 export default function App() {
   const [screenMode, setScreenMode] = useState<ScreenMode>('steps');
   const [triggerLayout, setTriggerLayout] = useState<TriggerLayout | null>(null);
+  const [collapseLayout, setCollapseLayout] = useState<TargetLayout | null>(null);
   const expansionProgress = useSharedValue(0);
 
   const handleOpenWater = useCallback((layout: TriggerLayout) => {
@@ -27,12 +30,18 @@ export default function App() {
 
   const handleExpansionComplete = useCallback(() => {
     setScreenMode('water');
-    setTriggerLayout(null);
   }, []);
 
-  const handleCloseWater = useCallback(() => {
+  const handleCloseWater = useCallback((layout: TargetLayout) => {
+    setCollapseLayout(layout);
+    setScreenMode('collapsing');
+  }, []);
+
+  const handleCollapseComplete = useCallback(() => {
     expansionProgress.value = 0;
     setScreenMode('steps');
+    setTriggerLayout(null);
+    setCollapseLayout(null);
   }, [expansionProgress]);
 
   const stepsDepthStyle = useAnimatedStyle(() => {
@@ -46,6 +55,7 @@ export default function App() {
   });
 
   const showExpansion = screenMode === 'expanding' && triggerLayout !== null;
+  const showCollapse = screenMode === 'collapsing' && collapseLayout !== null;
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -69,6 +79,14 @@ export default function App() {
           <View style={StyleSheet.absoluteFill}>
             <WaterScreen onClose={handleCloseWater} />
           </View>
+        )}
+        {showCollapse && collapseLayout && (
+          <CardCollapseOverlay
+            targetLayout={collapseLayout}
+            progress={expansionProgress}
+            onCollapseComplete={handleCollapseComplete}
+            renderContent={() => <WaterScreen onClose={handleCloseWater} />}
+          />
         )}
       </View>
     </GestureHandlerRootView>

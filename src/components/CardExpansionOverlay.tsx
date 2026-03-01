@@ -56,7 +56,7 @@ export const CardExpansionOverlay = React.memo(function CardExpansionOverlay({
   // Como estamos usando "scale", o arredondamento das bordas também encolhe visualmente.
   // Para que a borda pareça perfeitamente redonda no início, precisamos compensar a escala.
   const startBorderRadius = (triggerLayout.width / 2) / startScale;
-  const endBorderRadius = Platform.OS === 'ios' ? 38 : 28;
+  const endBorderRadius = 0;
 
   useEffect(() => {
     progress.value = withTiming(
@@ -76,8 +76,8 @@ export const CardExpansionOverlay = React.memo(function CardExpansionOverlay({
 
     return {
       position: 'absolute' as const,
-      width: screenWidth,
-      height: screenHeight,
+      width: '100%',
+      height: '100%',
       top: 0,
       left: 0,
       backgroundColor: '#FFF',
