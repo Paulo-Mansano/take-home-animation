@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { withTiming, Easing, runOnJS } from 'react-native-reanimated';
 import { WaterScreen } from './screens/WaterScreen';
 import { StepsScreen } from './screens/StepsScreen';
 import { CardExpansionOverlay } from './components/CardExpansionOverlay';
@@ -29,7 +30,7 @@ export default function App() {
   }, []);
 
   const handleExpansionComplete = useCallback(() => {
-    setScreenMode('water');
+
   }, []);
 
   const handleCloseWater = useCallback((layout: TargetLayout) => {
