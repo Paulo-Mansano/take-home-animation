@@ -3,10 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import type { SharedValue } from 'react-native-reanimated';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { LAYOUT } from '../constants/layout';
 import { COLORS } from '../constants/theme';
 
@@ -81,7 +81,7 @@ export const WaterSliderBar = React.memo(function WaterSliderBar({
       valueRef.value = next;
       if (onValueChange && next !== lastNotifiedValue.value) {
         lastNotifiedValue.value = next;
-        runOnJS(onValueChange)(next);
+        scheduleOnRN(onValueChange, next);
       }
     });
 

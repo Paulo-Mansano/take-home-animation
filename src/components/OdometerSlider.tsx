@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import type { SharedValue } from 'react-native-reanimated';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { DigitColumn } from './DigitColumn';
 import { useOdometerLogic } from '../animations/useOdometerLogic';
 import { decimalOdometerDuration } from '../animations/timings';
@@ -73,7 +74,7 @@ export const OdometerSlider = React.memo(function OdometerSlider({
       value.value = next;
       if (onValueChange && next !== lastNotifiedValue.value) {
         lastNotifiedValue.value = next;
-        runOnJS(onValueChange)(next);
+        scheduleOnRN(onValueChange, next);
       }
     });
 

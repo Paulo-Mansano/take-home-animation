@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { LAYOUT } from '../constants/layout';
 import { overlayDuration, easingCurve } from './timings';
 
@@ -39,7 +39,7 @@ export function useSlideUpAnimation(options: Options = {}) {
       (finished) => {
         'worklet';
         if (finished && onComplete) {
-          runOnJS(onComplete)();
+          scheduleOnRN(onComplete);
         }
       }
     );
